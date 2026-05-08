@@ -60,11 +60,32 @@ Core do app não conhece a engine. Captura 15 dimensões comportamentais → MEN
 
 ## Roadmap
 
-- **Fase 1** (atual): setup base + tooling + Capacitor + estrutura
-- **Fase 2:** Supabase + auth pai-criança + LGPD
-- **Fase 3:** migrar 7 telas do protótipo + roteamento + i18n
+- **Fase 1** ✅: setup base + tooling + Capacitor + estrutura
+- **Fase 2** ✅: Supabase + auth pai-criança + LGPD
+- **Fase 3** (atual): migrar 7 telas do protótipo + roteamento + i18n
 - **Fase 4:** Game Adapter Pattern + 1 jogo React + 1 Phaser
 - **Fase 5:** MENTOR IA + Sentry + PostHog + Resend + RevenueCat
 - **Fase 6:** Capacitor build + Vercel deploy + docs finais
 
 MVP completo: 15-22 semanas. Lançamento Q3-Q4 2027.
+
+## Estado atual (atualizado a cada fase grande)
+
+### Backend Supabase (`uwoibdyjbnrlrdtotygz.supabase.co`)
+
+- 13 tabelas com RLS habilitado (responsaveis, perfis_crianca, consentimentos_lgpd, trilhas, niveis, aulas, jogos, questoes com pgvector, sessoes, progresso_aluno, eventos_comportamento, conquistas, conquistas_aluno, mentor_insights, assinaturas, assinaturas_eventos, feedback)
+- Trigger `handle_new_user` cria registro em `responsaveis` automaticamente
+- Função `deletar_dados_crianca` para LGPD Art.18
+- pgvector(1536) em `questoes.embedding` para MENTOR (Fase 5)
+
+### Auth flow
+
+- `/(auth)/cadastro` → email verification → `/auth/callback` → `/(auth)/consentimento-lgpd` → `/pais/dashboard` (404 ainda, Fase 3)
+- `proxy.ts` (NÃO middleware.ts em Next 16) protege rotas privadas
+- `AuthProvider` + `useAuth()` em `src/providers/` e `src/hooks/`
+
+### LGPD docs (drafts em pt-BR, marcadores `[REVISÃO JURÍDICA]`)
+
+- `docs/COMPLIANCE_LGPD.md`
+- `docs/TERMOS_USO_MENORES.md`
+- `docs/POLITICA_PRIVACIDADE_INFANTIL.md`

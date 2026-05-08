@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Nunito } from 'next/font/google';
+import { Providers } from '@/providers/providers';
 import './globals.css';
 
 const nunito = Nunito({
@@ -35,7 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${nunito.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-white text-foreground">{children}</body>
+      <body className="min-h-full flex flex-col bg-white text-foreground">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
