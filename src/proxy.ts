@@ -17,7 +17,7 @@ const PUBLIC_ROUTES = [
   '/auth/callback',
 ];
 
-const PAIS_ONLY_ROUTES = ['/pais', '/consentimento-lgpd'];
+const PAIS_ONLY_ROUTES = ['/pais', '/consentimento-lgpd', '/onboarding'];
 
 const APP_ONLY_ROUTES = ['/home', '/trilha', '/aula', '/jogo', '/quiz', '/mentor'];
 

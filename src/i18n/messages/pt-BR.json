@@ -1,0 +1,98 @@
+{
+  "app": {
+    "name": "Nexus Kids Academy",
+    "tagline": "Aprender é uma aventura!"
+  },
+  "nav": {
+    "home": "Início",
+    "achievements": "Conquistas",
+    "ranking": "Ranking",
+    "shop": "Loja",
+    "parents": "Pais"
+  },
+  "auth": {
+    "signIn": "Entrar",
+    "signUp": "Cadastrar",
+    "signOut": "Sair",
+    "forgotPassword": "Esqueci minha senha",
+    "email": "E-mail",
+    "password": "Senha",
+    "confirmPassword": "Confirmar senha",
+    "name": "Nome completo"
+  },
+  "lgpd": {
+    "title": "Consentimento parental LGPD",
+    "termVersion": "Versão do termo"
+  },
+  "onboarding": {
+    "welcome": "Aprender é uma aventura!",
+    "subtitle": "Trilhas, jogos e desafios para você arrasar na escola.",
+    "ctaStart": "Vamos começar!",
+    "ageRange": "Para crianças de 6 a 10 anos",
+    "letMeKnowYou": "Vamos te conhecer!",
+    "threeQuestions": "3 perguntinhas rápidas.",
+    "askName": "Como podemos te chamar?",
+    "namePlaceholder": "Seu nome ou apelido",
+    "askAge": "Quantos anos você tem?",
+    "askGrade": "Qual série?",
+    "askAvatar": "Escolha um avatar",
+    "createProfile": "Criar meu perfil!"
+  },
+  "home": {
+    "hi": "Oi",
+    "level": "Nível",
+    "xp": "XP",
+    "yourJourney": "Sua jornada",
+    "tapTrail": "Toque em uma trilha pra continuar.",
+    "streak": "{count} dias seguidos",
+    "dailyMission": "Missão do dia",
+    "locked": "Bloqueada",
+    "letsLearn": "Bora aprender? 🐾"
+  },
+  "trail": {
+    "back": "Voltar",
+    "progress": "Progresso",
+    "easyLevel": "Nível Fácil",
+    "mediumLevel": "Nível Médio",
+    "hardLevel": "Nível Difícil",
+    "completed": "completo",
+    "inProgress": "em andamento",
+    "locked": "bloqueado",
+    "continue": "Continuar de onde parei"
+  },
+  "lesson": {
+    "microlearning": "Microlearning · {minutes} min",
+    "keyPoints": "Pontos importantes",
+    "mentorWatching": "MENTOR está aprendendo como você aprende.",
+    "nextStep": "Próximo passo: vamos jogar!"
+  },
+  "game": {
+    "question": "Pergunta {current}/{total}",
+    "wellDone": "Mandou bem! +{xp} XP",
+    "almost": "Quase! Tenta de novo 💪",
+    "next": "Pra pergunta {n}"
+  },
+  "quiz": {
+    "questionOf": "Pergunta {current} de {total}",
+    "correctAnswer": "Mandou bem!",
+    "wrongAnswer": "Quase!",
+    "rightAnswerIs": "A resposta certa é {answer}. Vamos revisar?",
+    "viewExplanation": "Ver explicação",
+    "nextQuestion": "Próxima pergunta"
+  },
+  "mentor": {
+    "header": "Mensagem do MENTOR",
+    "accept": "Bora! 🚀",
+    "later": "Agora não",
+    "alreadyLearned": "O MENTOR já aprendeu sobre você",
+    "concepts": "conceitos",
+    "accuracy": "acertos",
+    "strengths": "pontos fortes"
+  },
+  "errors": {
+    "notFound": "Página não encontrada",
+    "general": "Algo deu errado",
+    "tryAgain": "Tentar novamente",
+    "backHome": "Voltar para o início"
+  }
+}
