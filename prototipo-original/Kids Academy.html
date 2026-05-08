@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kids Academy — Protótipo Hi-Fi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  html, body, #root { height: 100%; }
+  body {
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: #f5f3ef;
+    color: #111827;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* App "device" frame for the prototype, while keeping content responsive */
+  .demo-shell {
+    background: #ffffff;
+    border-radius: 28px;
+    box-shadow: 0 30px 80px -40px rgba(15,23,42,0.35), 0 0 0 1px rgba(15,23,42,0.05);
+    overflow: hidden;
+  }
+  .nav-tab[data-active="true"] { background: #6B46C1; color: white; }
+  .nav-tab[data-active="true"] .nav-num { background: rgba(255,255,255,.18); color: white; }
+  /* Hide scrollbars in the inner screen container, but allow scroll */
+  .screen-scroll::-webkit-scrollbar { width: 8px; }
+  .screen-scroll::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 8px; }
+  .text-balance { text-wrap: balance; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="screens-a.jsx"></script>
+  <script type="text/babel" src="screens-b.jsx"></script>
+
+  <script type="text/babel">
+    const SCREENS = [
+      { id: "onboard",  num: 1, label: "Onboarding",  comp: () => <ScreenOnboarding onComplete={() => setScreen("home")} /> },
+      { id: "home",     num: 2, label: "Home Mapa",   comp: () => <ScreenHome onOpenTrilha={() => setScreen("trilha")} /> },
+      { id: "trilha",   num: 3, label: "Trilha",      comp: () => <ScreenTrilha onBack={() => setScreen("home")} onOpenAula={() => setScreen("aula")} /> },
+      { id: "aula",     num: 4, label: "Videoaula",   comp: () => <ScreenVideoaula onBack={() => setScreen("trilha")} onNext={() => setScreen("jogo")} /> },
+      { id: "jogo",     num: 5, label: "Jogo",        comp: () => <ScreenJogo onBack={() => setScreen("trilha")} onFinish={() => setScreen("quiz")} /> },
+      { id: "quiz",     num: 6, label: "Quiz",        comp: () => <ScreenQuiz onBack={() => setScreen("trilha")} /> },
+      { id: "mentor",   num: 7, label: "MENTOR",      comp: () => <ScreenMentor onAccept={() => setScreen("jogo")} onLater={() => setScreen("home")} /> },
+    ];
+
+    let setScreen; // bound below
+
+    function App() {
+      const [screen, _setScreen] = React.useState("onboard");
+      setScreen = _setScreen;
+
+      const current = SCREENS.find((s) => s.id === screen) || SCREENS[0];
+
+      return (
+        <div className="min-h-screen w-full px-3 md:px-6 py-4 md:py-6">
+          {/* Demo nav (tabs to switch screens — não existe em produção) */}
+          <div className="max-w-6xl mx-auto mb-4 md:mb-6">
+            <div className="flex flex-wrap items-center gap-2 md:gap-3 px-3 md:px-4 py-3 rounded-2xl bg-white shadow-sm border border-gray-200">
+              <div className="flex items-center gap-2 mr-2">
+                <KidsAcademyLogo size="sm" />
+                <span className="hidden sm:inline text-[11px] font-extrabold uppercase tracking-wide text-gray-400 border-l border-gray-200 pl-2">
+                  Protótipo · 7 telas
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 md:gap-2 ml-auto">
+                {SCREENS.map((s) => (
+                  <button
+                    key={s.id}
+                    data-active={screen === s.id}
+                    onClick={() => _setScreen(s.id)}
+                    className="nav-tab inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-extrabold text-gray-700 hover:bg-gray-100 transition"
+                  >
+                    <span className="nav-num inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-500 text-[12px]">
+                      {s.num}
+                    </span>
+                    <span className="hidden sm:inline">{s.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Screen frame — responsive, centered */}
+          <div className="max-w-6xl mx-auto">
+            <div className="demo-shell" style={{ minHeight: "min(820px, calc(100vh - 140px))" }}>
+              <div className="screen-scroll" style={{ height: "min(820px, calc(100vh - 140px))", overflowY: "auto" }}>
+                {current.comp()}
+              </div>
+            </div>
+            <p className="mt-3 text-center text-xs font-bold text-gray-400">
+              Tela {current.num} de 7 · {current.label} · Web responsivo · Use as abas acima para navegar
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    function tryMount() {
+      // wait until all babel-loaded modules expose their globals
+      const required = [
+        "DogBerg","KidsAcademyLogo","Icon","SpeechBubble","Avatar","FractionPizza","FractionSquare","FractionCircle",
+        "ScreenOnboarding","ScreenHome","ScreenTrilha","ScreenVideoaula","ScreenJogo","ScreenQuiz","ScreenMentor",
+      ];
+      if (required.every((k) => typeof window[k] !== "undefined")) {
+        ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+      } else {
+        setTimeout(tryMount, 30);
+      }
+    }
+    tryMount();
+  </script>
+</body>
+</html>

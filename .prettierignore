@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+build
+dist
+android
+ios
+prototipo-original
+package-lock.json
+*.lock
+.env
+.env.local
+.env.*.local
+public
+src/types/database.types.ts
