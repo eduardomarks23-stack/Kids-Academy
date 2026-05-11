@@ -21,17 +21,10 @@
 -- Trigger antigo em auth.users (criava registro em responsaveis)
 -- -------------------------------------------------------------
 drop trigger if exists on_auth_user_created on auth.users;
-drop function if exists public.handle_new_user();
 
 -- -------------------------------------------------------------
--- Funções utilitárias pt-BR
--- -------------------------------------------------------------
-drop function if exists public.deletar_dados_crianca(uuid);
-drop function if exists public.pertence_ao_responsavel(uuid);
-drop function if exists public.update_updated_at();
-
--- -------------------------------------------------------------
--- Tabelas (CASCADE remove RLS, triggers, indexes, FKs)
+-- Tabelas primeiro (CASCADE remove RLS, policies, triggers, indexes, FKs)
+-- Necessário antes das funções porque policies dependem das funções.
 -- -------------------------------------------------------------
 drop table if exists public.feedback cascade;
 drop table if exists public.assinaturas_eventos cascade;
@@ -51,6 +44,14 @@ drop table if exists public.sessoes cascade;
 drop table if exists public.consentimentos_lgpd cascade;
 drop table if exists public.perfis_crianca cascade;
 drop table if exists public.responsaveis cascade;
+
+-- -------------------------------------------------------------
+-- Funções pt-BR (após tabelas — policies já foram dropadas via CASCADE)
+-- -------------------------------------------------------------
+drop function if exists public.handle_new_user();
+drop function if exists public.deletar_dados_crianca(uuid);
+drop function if exists public.pertence_ao_responsavel(uuid);
+drop function if exists public.update_updated_at();
 
 -- -------------------------------------------------------------
 -- Enums pt-BR
