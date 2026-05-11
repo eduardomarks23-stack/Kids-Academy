@@ -11,3 +11,6 @@ export function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );
 }
+
+// Alias canônico (SPEC seção 4 — naming consistency com server.ts)
+export const createBrowserSupabaseClient = createClient;

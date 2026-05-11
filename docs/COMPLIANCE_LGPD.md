@@ -34,7 +34,7 @@ A Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018) trata especial
 
 - E-mail (obrigatório, autenticação)
 - Nome (obrigatório)
-- Telefone (opcional, contato)
+- Telefone (campo `responsaveis.telefone` reservado no schema, **não coletado em formulários atuais**; se for ativado no futuro, finalidade será 2FA por SMS e contato em incidentes — só com consentimento adicional explícito)
 - CPF (opcional, **armazenado apenas como hash** — nunca em claro) [REVISÃO JURÍDICA]: confirmar se hash é suficiente ou se é necessário tokenização
 
 ### Dados da criança

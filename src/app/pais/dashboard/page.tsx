@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { KidsAvatar } from '@/components/kids/avatar';
 import { KidsIcon } from '@/components/kids/icons';
+import { setPerfilAtivo } from './actions';
 
 export default async function PaisDashboardPage() {
   const supabase = await createServerSupabaseClient();
@@ -48,21 +49,41 @@ export default async function PaisDashboardPage() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 gap-4">
-            {filhos.map((f) => (
-              <div
-                key={String(f.id)}
-                className="rounded-2xl border border-gray-200 bg-white p-5 flex items-center gap-4"
-              >
-                <KidsAvatar name={String(f.nome ?? 'C').slice(0, 1)} size={56} />
-                <div className="flex-1 min-w-0">
-                  <p className="font-extrabold text-gray-900 truncate">{String(f.nome)}</p>
-                  <p className="text-sm text-gray-500">{String(f.serie)}</p>
-                </div>
-                {!f.ativo && (
-                  <span className="text-xs font-bold text-gray-400">inativo</span>
-                )}
-              </div>
-            ))}
+            {filhos.map((f) => {
+              const inicial = String(f.nome ?? 'C').slice(0, 1);
+              const baseClass =
+                'rounded-2xl border border-gray-200 bg-white p-5 flex items-center gap-4 w-full text-left';
+
+              if (!f.ativo) {
+                return (
+                  <div key={String(f.id)} className={`${baseClass} opacity-60`}>
+                    <KidsAvatar name={inicial} size={56} />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-gray-900 truncate">{String(f.nome)}</p>
+                      <p className="text-sm text-gray-500">{String(f.serie)}</p>
+                    </div>
+                    <span className="text-xs font-bold text-gray-400">inativo</span>
+                  </div>
+                );
+              }
+
+              return (
+                <form key={String(f.id)} action={setPerfilAtivo}>
+                  <input type="hidden" name="perfilId" value={String(f.id)} />
+                  <button
+                    type="submit"
+                    className={`${baseClass} hover:border-purple-400 hover:shadow-md transition-all cursor-pointer`}
+                  >
+                    <KidsAvatar name={inicial} size={56} />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-gray-900 truncate">{String(f.nome)}</p>
+                      <p className="text-sm text-gray-500">{String(f.serie)}</p>
+                    </div>
+                    <span className="text-sm font-bold text-purple-700">Entrar →</span>
+                  </button>
+                </form>
+              );
+            })}
           </div>
         )}
       </section>

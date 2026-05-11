@@ -1,0 +1,103 @@
+📄 NOTAS DE INTEGRAÇÃO TÉCNICA
+Micro-jogo Educativo: "Encaixe das Formas Mágicas"
+Stack: Next.js 14+ (App Router) • TypeScript Strict • Phaser 3 • Zustand • Framer Motion • Tailwind + shadcn/ui
+Público-alvo: Primeira infância (3–6 anos)
+Status: Pronto para integração nativa em ambiente de produção
+🏗️ 1. Arquitetura & Separação de Responsabilidades
+Arquivo
+Responsabilidade
+Por que isolado?
+gameConfig.ts
+Configuração do engine, escala, física e input
+Permite ajuste de resolução/proporção sem tocar na lógica da cena
+MainScene.ts
+Loop do jogo, drag & drop, colisões, partículas, emissão de eventos
+Mantém a cena pura, testável e independente do React
+store/useGameStore.ts
+Estado reativo da UI (overlay, progresso, vitória)
+Sincroniza apenas o necessário com o React, evitando re-renders no canvas
+GameComponent.tsx
+Client Component Next.js, ciclo de vida do Phaser, ponte de eventos, UI overlay
+Isola efeitos colaterais (useEffect), garante SSR safety e cleanup
+✅ Regra de ouro: O Phaser gerencia o estado do jogo. O React gerencia a interface. A comunicação é unidirecional via eventos.
+🔒 2. Segurança SSR & Next.js App Router
+O Phaser acessa window, document e CanvasRenderingContext2D. Nunca deve ser importado ou instanciado no servidor.
+A instanciação ocorre exclusivamente dentro de useEffect no "use client", garantindo execução apenas no navegador.
+next/dynamic não foi utilizado propositalmente: o useEffect já oferece isolamento mais performático e evita flicker de loading desnecessário para um canvas controlado.
+Atenção em rotas dinâmicas: Se o componente for renderizado condicionalmente, o cleanup do useEffect garante que o canvas anterior seja destruído antes da nova montagem.
+🌉 3. Ponte Phaser ↔ React (Comunicação)
+A comunicação segue o padrão Event-Driven, evitando acoplamento direto de estado:
+text
+1
+scoreUpdate e victory são emitidos pela MainScene.
+O React escuta via game.events.on('sceneReady', (scene) => { scene.events.on(...) }).
+Por que não usar Zustand dentro da Scene?
+O Phaser roda em requestAnimationFrame (60fps). Atualizar stores React a cada frame causaria re-renders massivos e travamentos. Eventos discretos (drop, vitória) mantêm a UI sincronizada sem impacto no loop do jogo.
+🧹 4. Gerenciamento de Ciclo de Vida & Memory Leaks
+Em SPAs e Next.js Client Navigation, múltiplas montagens de canvas são a principal causa de vazamento de memória.
+gameRef.current atua como guard para impedir dupla instanciação.
+game.destroy(true) no retorno do useEffect:
+Remove o <canvas> do DOM
+Destrói texturas, tweens, input listeners e cenas
+Limpa referências internas do WebGL/Canvas2D
+Validação em produção: Monitore Performance > Memory no DevTools. Após navegação de ida/volta, o heap deve retornar ao baseline.
+📱 5. Otimizações Mobile & UX para Primeira Infância (3–6 anos)
+Recurso
+Implementação
+Justificativa Pedagógica/Técnica
+Áreas de toque ampliadas
+setScale(1.3) + pixelPerfect: false
+Coordenação motora fina em desenvolvimento
+Tolerância de encaixe
+distance < 70px
+Reduz frustração, mantém engajamento
+Feedback imediato
+Snap suave + partículas + modal celebratório
+Reforço positivo condiciona aprendizagem
+CSS touch-manipulation
+No container do canvas
+Bloqueia zoom/scroll acidental com múltiplos dedos
+activePointers: 3
+Config do Phaser
+Permite multi-toque natural (crianças usam 2-3 dedos)
+Zero texto complexo
+Ícones, cores, animações
+Pré-alfabetização: compreensão por associação visual
+🧠 Dica EdTech: Crianças de 3–4 anos respondem melhor a feedbacks sonoros agudos e curtos (pop, ding). Adicione this.sound.play('success') na MainScene para completar o loop sensorial.
+🎨 6. Assets & Geração Procedural
+Todas as texturas são geradas via this.make.graphics().generateTexture() no preload().
+Vantagens:
+Zero requisições HTTP → carregamento instantâneo
+Sem problemas de CORS, cache ou SSR
+Bundle menor e previsível
+Migração para assets reais:
+Substitua generateTexture por this.load.image('circle', '/assets/circle.png') e ajuste as dimensões no create(). Mantenha a mesma chave (key) para preservar a lógica.
+🔄 7. Estado Global & Sincronização (Zustand)
+A store controla apenas o que a UI React precisa: isPlaying, score, isVictory.
+O Phaser mantém seu estado interno (matchedCount, posições, tweens).
+Extensão futura:
+Adicione middleware persist do Zustand para salvar progresso no localStorage ou sincronize com backend via TanStack Query:
+ts
+1234
+🚀 8. Checklist de Integração
+Componente importado apenas em Client Components ou páginas com "use client"
+Container do canvas possui aspect-video ou dimensões explícitas (necessário para Phaser.Scale.FIT)
+Tailwind touch-manipulation aplicado ao wrapper do jogo
+Testado em iOS Safari e Android Chrome (multi-toque e gestos nativos)
+Verificado cleanup: navegar para outra rota e voltar não duplica <canvas>
+Lighthouse Performance > 90 (sem assets externos bloqueantes)
+Acessibilidade: aria-label no container (opcional, mas recomendado para leitores de tela em modo pais)
+📦 9. Próximos Passos Recomendados
+Áudio: Adicionar this.load.audio() no preload e disparar no handleCorrectMatch. Use formatos .mp3 + .ogg para compatibilidade cross-browser.
+Analytics: Emitir eventos customizados (game.events.emit('analytics', { action: 'shape_matched', shape: 'circle' })) para tracking de engajamento.
+Dificuldade Progressiva: Adicionar rotação das formas, mais peças ou timer visual (barra de cores, não números).
+Testes Automatizados: Mock do Phaser com jest-canvas-mock para testar emissão de eventos da MainScene sem renderizar o engine.
+📞 Suporte & Manutenção
+Versões validadas: Phaser ^3.70.0, Next.js ^14.2.0, React ^18.3.0, Zustand ^4.5.0
+Debug da Scene: Altere arcade: { debug: false } para true em gameConfig.ts para visualizar hitboxes e vetores.
+Problemas comuns:
+Cannot read properties of undefined (reading 'game') → Phaser instanciado fora do useEffect ou antes do mount.
+Canvas duplicado → Cleanup do useEffect não executado (verifique dependências do array).
+Touch não responde no iOS → Adicione <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"> no layout.tsx.
+📝 Documento mantido pelo time de Engenharia EdTech. Atualize ao modificar a ponte de eventos ou a configuração de escala.
+🔗 Referências: Phaser 3 Docs • Next.js Client Components • Zustand Best Practices

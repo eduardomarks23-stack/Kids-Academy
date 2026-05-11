@@ -4,6 +4,9 @@ import { createClient } from '@/lib/supabase/client';
 import type { Json } from '@/types/database.types';
 import type { BehaviorEvent, BehaviorEventType } from './types';
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isUuid = (v: string | undefined): v is string => !!v && UUID_RE.test(v);
+
 /**
  * BehaviorTracker — captura eventos comportamentais com debounce/batch
  * e persiste em `eventos_comportamento` no Supabase.
@@ -41,7 +44,6 @@ export class BehaviorTracker {
   private hesitacaoTimer?: ReturnType<typeof setTimeout>;
   private blurListener?: () => void;
   private focusListener?: () => void;
-  private mouseMoveListener?: () => void;
   private disposed = false;
 
   constructor(config: TrackerConfig) {
@@ -97,14 +99,21 @@ export class BehaviorTracker {
 
     const batch = this.queue.splice(0);
     const supabase = createClient();
+
+    // FK columns esperam UUID. Slugs (ex: 'encaixe-formas') são preservados em valor.jogo_slug.
+    const sessaoId = isUuid(this.config.sessaoId) ? this.config.sessaoId : null;
+    const jogoId = isUuid(this.config.jogoId) ? this.config.jogoId : null;
+    const aulaId = isUuid(this.config.aulaId) ? this.config.aulaId : null;
+    const jogoSlug = !jogoId && this.config.jogoId ? this.config.jogoId : null;
+
     const rows = batch.map((e) => ({
       perfil_crianca_id: this.config.perfilCriancaId,
-      sessao_id: this.config.sessaoId,
-      jogo_id: this.config.jogoId,
-      aula_id: this.config.aulaId,
+      sessao_id: sessaoId,
+      jogo_id: jogoId,
+      aula_id: aulaId,
       tipo: e.type,
-      valor: e.valor as Json,
-      questao_id: e.questao_id,
+      valor: { ...e.valor, ...(jogoSlug ? { jogo_slug: jogoSlug } : {}) } as Json,
+      questao_id: isUuid(e.questao_id) ? e.questao_id : null,
       registrado_em: e.registrado_em,
     }));
 
@@ -136,9 +145,6 @@ export class BehaviorTracker {
     };
     this.focusListener = () => {
       this.track({ type: 'engajamento_foco', valor: { foco: true } });
-    };
-    this.mouseMoveListener = () => {
-      // Reset hesitação a cada movimento (caller pode sobrescrever via resetHesitacaoTimer)
     };
 
     window.addEventListener('blur', this.blurListener);

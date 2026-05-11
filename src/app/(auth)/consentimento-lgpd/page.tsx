@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -34,11 +34,21 @@ const consentimentoSchema = z.object({
 
 type ConsentimentoInput = z.infer<typeof consentimentoSchema>;
 
+// Whitelist de destinos seguros após consentimento — evita open redirect.
+const ALLOWED_NEXT_PATHS = ['/onboarding', '/pais/dashboard'] as const;
+
 export default function ConsentimentoLgpdPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, loading } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const nextParam = searchParams.get('next');
+  const nextPath: string =
+    nextParam && (ALLOWED_NEXT_PATHS as readonly string[]).includes(nextParam)
+      ? nextParam
+      : '/pais/dashboard';
 
   const form = useForm<ConsentimentoInput>({
     resolver: zodResolver(consentimentoSchema),
@@ -106,7 +116,7 @@ export default function ConsentimentoLgpdPage() {
       return;
     }
 
-    router.push('/pais/dashboard');
+    router.push(nextPath);
   }
 
   if (loading) {

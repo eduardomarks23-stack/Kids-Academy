@@ -164,4 +164,10 @@ export const KidsIcon = {
       <path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" />
     </svg>
   ),
+  User: ({ size = 24, className }: IconProps) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" className={className} {...baseProps}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />
+    </svg>
+  ),
 };

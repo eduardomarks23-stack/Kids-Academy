@@ -15,11 +15,39 @@ const PUBLIC_ROUTES = [
   '/cadastro',
   '/recuperar-senha',
   '/auth/callback',
+  // (marketing) — público
+  '/planos',
+  '/sobre',
 ];
 
-const PAIS_ONLY_ROUTES = ['/pais', '/consentimento-lgpd', '/onboarding'];
+const PAIS_ONLY_ROUTES = [
+  '/pais',
+  '/consentimento-lgpd',
+  '/onboarding',
+  // (parent) — spec v1 routes
+  '/dashboard',
+  '/children',
+  '/billing',
+  '/settings',
+];
 
-const APP_ONLY_ROUTES = ['/home', '/trilha', '/aula', '/jogo', '/quiz', '/mentor'];
+const APP_ONLY_ROUTES = [
+  // legacy (app) routes
+  '/home',
+  '/arena',
+  '/perfil',
+  '/trilha',
+  '/aula',
+  '/jogo',
+  '/quiz',
+  '/mentor',
+  // (child) — spec v1 routes
+  '/inicio',
+  '/axis',
+  '/chapter',
+  '/session',
+  '/world',
+];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

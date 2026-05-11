@@ -13,17 +13,21 @@ interface BottomNavItem {
 
 const ITEMS: BottomNavItem[] = [
   { id: 'home', label: 'Início', href: '/home', Icon: KidsIcon.Home },
-  { id: 'trophy', label: 'Conquistas', href: '/conquistas', Icon: KidsIcon.Trophy },
-  { id: 'rank', label: 'Ranking', href: '/ranking', Icon: KidsIcon.Rank },
-  { id: 'shop', label: 'Loja', href: '/loja', Icon: KidsIcon.Shop },
-  { id: 'parent', label: 'Pais', href: '/pais/dashboard', Icon: KidsIcon.Parent },
+  { id: 'arena', label: 'Arena', href: '/arena', Icon: KidsIcon.Bolt },
+  { id: 'perfil', label: 'Perfil', href: '/perfil', Icon: KidsIcon.User },
 ];
+
+/**
+ * Rotas onde a BottomNav fica oculta (precisam viewport completo).
+ */
+const HIDE_ON_PREFIXES = ['/jogo/', '/aula/', '/quiz/'];
 
 export function BottomNav() {
   const pathname = usePathname();
+  if (HIDE_ON_PREFIXES.some((p) => pathname.startsWith(p))) return null;
   return (
     <nav className="fixed bottom-0 inset-x-0 z-30 bg-white border-t border-gray-100">
-      <div className="max-w-2xl mx-auto grid grid-cols-5">
+      <div className="max-w-2xl mx-auto grid grid-cols-3">
         {ITEMS.map((item) => {
           const Icon = item.Icon;
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);

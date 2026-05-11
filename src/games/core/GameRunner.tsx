@@ -40,6 +40,9 @@ export function GameRunner({ slug, config, onComplete, onScoreUpdate }: GameRunn
   if (!entry) {
     return <GameError message={`Jogo não encontrado: ${slug}`} />;
   }
+  if (entry.comingSoon) {
+    return <GameError message={`${entry.title} chega em breve!`} />;
+  }
   if (entry.engine === 'pixi') {
     return <GameError message="PixiJS engine não implementada ainda" />;
   }
@@ -62,7 +65,7 @@ export function GameRunner({ slug, config, onComplete, onScoreUpdate }: GameRunn
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex-1 min-h-0 flex flex-col">
       {/* eslint-disable-next-line react-hooks/static-components */}
       <GameComponent slug={slug} config={config} callbacks={callbacks} />
       <ScoreOverlay score={score} />

@@ -19,12 +19,17 @@ const AVATARS = [
 ] as const;
 
 const SERIES = [
+  { id: 'EI_1', label: 'Pré-I' },
+  { id: 'EI_2', label: 'Pré-II' },
+  { id: 'EI_3', label: 'Pré-III' },
   { id: 'EF_1', label: '1º ano' },
   { id: 'EF_2', label: '2º ano' },
   { id: 'EF_3', label: '3º ano' },
   { id: 'EF_4', label: '4º ano' },
   { id: 'EF_5', label: '5º ano' },
 ] as const;
+
+const IDADES = [3, 4, 5, 6, 7, 8, 9, 10] as const;
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -49,6 +54,23 @@ export default function OnboardingPage() {
     setSubmitting(true);
     setError(null);
     const supabase = createClient();
+
+    // LGPD Art. 14 §1º — bloqueia criação do perfil sem consentimento parental
+    // obrigatório registrado. Defesa em profundidade caso o usuário pule a tela
+    // de consentimento via login direto ou navegação manual.
+    const { data: consent } = await supabase
+      .from('consentimentos_lgpd')
+      .select('id')
+      .eq('responsavel_id', user.id)
+      .eq('tipo', 'tratamento_dados')
+      .eq('status', 'concedido')
+      .maybeSingle();
+
+    if (!consent) {
+      router.push('/consentimento-lgpd?next=/onboarding');
+      return;
+    }
+
     const { error: insertError } = await supabase.from('perfis_crianca').insert({
       responsavel_id: user.id,
       nome: name.trim(),
@@ -106,7 +128,7 @@ export default function OnboardingPage() {
             </button>
 
             <p className="mt-6 text-xs text-gray-400 font-semibold tracking-wide uppercase">
-              Para crianças de 6 a 10 anos
+              Para crianças de 3 a 10 anos
             </p>
           </div>
         )}
@@ -141,8 +163,8 @@ export default function OnboardingPage() {
 
             <div className="mt-6">
               <span className="text-base font-bold text-gray-700">Quantos anos você tem?</span>
-              <div className="mt-3 grid grid-cols-5 gap-2">
-                {[6, 7, 8, 9, 10].map((a) => (
+              <div className="mt-3 grid grid-cols-4 sm:grid-cols-8 gap-2">
+                {IDADES.map((a) => (
                   <button
                     key={a}
                     type="button"
@@ -161,13 +183,13 @@ export default function OnboardingPage() {
 
             <div className="mt-6">
               <span className="text-base font-bold text-gray-700">Qual série?</span>
-              <div className="mt-3 grid grid-cols-5 gap-2">
+              <div className="mt-3 grid grid-cols-4 sm:grid-cols-8 gap-2">
                 {SERIES.map((s) => (
                   <button
                     key={s.id}
                     type="button"
                     onClick={() => setSerie(s.id)}
-                    className={`h-14 rounded-2xl font-extrabold text-base transition-all ${
+                    className={`h-14 rounded-2xl font-extrabold text-sm transition-all ${
                       serie === s.id
                         ? 'bg-yellow-300 text-gray-900 shadow-md scale-[1.04]'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

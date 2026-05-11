@@ -1,8 +1,14 @@
 @AGENTS.md
+@GUARDRAILS.md
 
 # Nexus Kids Academy — Guia para Claude
 
 Plataforma educacional gamificada infantil. Mobile-first via Capacitor, lojas Google Play + Apple App Store. Compliance LGPD para menores.
+
+## Regras obrigatórias
+
+`GUARDRAILS.md` (raiz do projeto) — TODAS as regras invioláveis, stack travada,
+convenções, anti-patterns e lições aprendidas. **Ler antes de qualquer alteração.**
 
 ## Plano de implementação
 

@@ -44,5 +44,10 @@ export function PhaserHost({ slug, config, callbacks }: GameComponentProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
-  return <div ref={containerRef} className="w-full min-h-[60vh] flex items-center justify-center" />;
+  return (
+    <div
+      ref={containerRef}
+      className="w-full flex-1 min-h-0 touch-manipulation"
+    />
+  );
 }

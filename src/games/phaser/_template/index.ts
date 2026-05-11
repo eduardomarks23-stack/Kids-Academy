@@ -62,6 +62,7 @@ export default class TemplatePhaserGame implements KidsAcademyGameWithCallbacks 
     });
 
     void config;
+    void this.callbacks;
   }
 
   unmount(): void {
