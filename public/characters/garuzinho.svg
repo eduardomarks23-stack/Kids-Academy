@@ -1,0 +1,15 @@
+<!-- TODO: PLACEHOLDER — design final do Garuzinho (border collie filhote) -->
+<!-- Substituir por SVG vetorial finalizado pelo designer -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <circle cx="100" cy="120" r="70" fill="#1F2937"/>
+  <circle cx="100" cy="120" r="68" fill="#FFFFFF"/>
+  <ellipse cx="80" cy="80" rx="25" ry="30" fill="#1F2937"/>
+  <ellipse cx="120" cy="80" rx="25" ry="30" fill="#1F2937"/>
+  <circle cx="85" cy="115" r="6" fill="#1F2937"/>
+  <circle cx="115" cy="115" r="6" fill="#1F2937"/>
+  <ellipse cx="100" cy="135" rx="10" ry="6" fill="#1F2937"/>
+  <path d="M 90 145 Q 100 155 110 145" stroke="#1F2937" stroke-width="3" fill="none"/>
+  <!-- Laço vermelho permanente -->
+  <path d="M 70 175 L 100 165 L 130 175 L 100 185 Z" fill="#EF4444"/>
+  <circle cx="100" cy="175" r="6" fill="#DC2626"/>
+</svg>
