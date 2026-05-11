@@ -47,6 +47,7 @@ const APP_ONLY_ROUTES = [
   '/chapter',
   '/session',
   '/world',
+  '/casinha',
 ];
 
 export async function proxy(request: NextRequest) {

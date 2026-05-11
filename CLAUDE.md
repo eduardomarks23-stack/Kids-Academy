@@ -68,8 +68,9 @@ Core do app não conhece a engine. Captura 15 dimensões comportamentais → MEN
 
 - **Fase 1** ✅: setup base + tooling + Capacitor + estrutura
 - **Fase 2** ✅: Supabase + auth pai-criança + LGPD
-- **Fase 3** (atual): migrar 7 telas do protótipo + roteamento + i18n
-- **Fase 4:** Game Adapter Pattern + 1 jogo React + 1 Phaser
+- **Fase 3** ✅: migrar 7 telas do protótipo + roteamento + i18n
+- **Fase 4** ✅: Game Adapter Pattern + 1 jogo React + 1 Phaser
+- **Mundo dos Curiosos (3-4 anos)** ✅ (2026-05-11): 152 átomos, 38 sessões, 4 eixos, 11 cenas Phaser-template, casinha virtual com colecionáveis afetivos, TTS placeholder, painel pai com relatórios e PIN parental. Ver `docs/PROGRESS.md` e `docs/DECISIONS.md`.
 - **Fase 5:** MENTOR IA + Sentry + PostHog + Resend + RevenueCat
 - **Fase 6:** Capacitor build + Vercel deploy + docs finais
 

@@ -99,5 +99,55 @@ export async function POST(req: Request) {
     );
   }
 
+  // Se o átomo é do tipo "celebrate" e foi bem-sucedido, registrar
+  // o colecionável correspondente na casinha da criança.
+  if (input.success) {
+    const { data: atom } = await admin
+      .from('atoms')
+      .select('atom_type, config')
+      .eq('id', input.atomId)
+      .single();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const atomData = atom as any;
+    const collectibleSlug = atomData?.config?.collectibleSlug as string | undefined;
+    if (atomData?.atom_type === 'celebrate' && collectibleSlug) {
+      await admin.from('child_collectibles').upsert(
+        {
+          child_id: input.childId,
+          collectible_slug: collectibleSlug,
+          source_atom_id: input.atomId,
+        },
+        { onConflict: 'child_id,collectible_slug', ignoreDuplicates: true },
+      );
+    }
+
+    // Marca completed_at na session_progress no último átomo da sessão
+    // (se este atom é o de maior display_order da sessão)
+    const { data: maxAtom } = await admin
+      .from('atoms')
+      .select('display_order')
+      .eq('session_id', input.sessionId)
+      .order('display_order', { ascending: false })
+      .limit(1)
+      .single();
+
+    const { data: currentAtom } = await admin
+      .from('atoms')
+      .select('display_order')
+      .eq('id', input.atomId)
+      .single();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if ((maxAtom as any)?.display_order === (currentAtom as any)?.display_order) {
+      await admin
+        .from('session_progress')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .update({ completed_at: new Date().toISOString() } as any)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .eq('id', (progress as any).id);
+    }
+  }
+
   return NextResponse.json({ ok: true });
 }

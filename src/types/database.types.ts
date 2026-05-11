@@ -1366,6 +1366,84 @@ export type Database = {
         }
         Relationships: []
       }
+      child_collectibles: {
+        Row: {
+          child_id: string
+          collectible_slug: string
+          acquired_at: string
+          source_atom_id: string | null
+        }
+        Insert: {
+          child_id: string
+          collectible_slug: string
+          acquired_at?: string
+          source_atom_id?: string | null
+        }
+        Update: {
+          child_id?: string
+          collectible_slug?: string
+          acquired_at?: string
+          source_atom_id?: string | null
+        }
+        Relationships: []
+      }
+      parent_settings: {
+        Row: {
+          child_id: string
+          daily_minutes_limit: number | null
+          preferred_voice: string | null
+          audio_enabled: boolean
+          parental_pin_hash: string | null
+          parental_pin_set_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          child_id: string
+          daily_minutes_limit?: number | null
+          preferred_voice?: string | null
+          audio_enabled?: boolean
+          parental_pin_hash?: string | null
+          parental_pin_set_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          child_id?: string
+          daily_minutes_limit?: number | null
+          preferred_voice?: string | null
+          audio_enabled?: boolean
+          parental_pin_hash?: string | null
+          parental_pin_set_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pending_erasures: {
+        Row: {
+          id: string
+          child_id: string
+          scheduled_at: string
+          reason: string | null
+          executed_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          child_id: string
+          scheduled_at?: string
+          reason?: string | null
+          executed_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          child_id?: string
+          scheduled_at?: string
+          reason?: string | null
+          executed_at?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
