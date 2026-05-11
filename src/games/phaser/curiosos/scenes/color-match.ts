@@ -18,9 +18,9 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
-  HIT_AREA_MIN_PX,
 } from './shared';
 import type { TtsTrack } from '@/lib/audio/tts-placeholder';
 
@@ -66,6 +66,7 @@ export default class ColorMatchScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? `Toca em tudo ${this.params.targetColor}`);
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
     const target = this.params.targetColor;
@@ -103,7 +104,6 @@ export default class ColorMatchScene extends Phaser.Scene {
         fontSize: 56,
       });
       const sprite = this.add.image(pos.x, pos.y, tex).setInteractive({ useHandCursor: true });
-      sprite.setSize(Math.max(120, HIT_AREA_MIN_PX), Math.max(120, HIT_AREA_MIN_PX));
       sprite.setData('counted', false);
 
       sprite.on('pointerdown', () => {

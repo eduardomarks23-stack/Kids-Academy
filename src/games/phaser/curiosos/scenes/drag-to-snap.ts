@@ -16,9 +16,9 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
-  HIT_AREA_MIN_PX,
   SNAP_RADIUS_PX,
 } from './shared';
 import type { TtsTrack } from '@/lib/audio/tts-placeholder';
@@ -54,6 +54,7 @@ export default class DragToSnapScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Arrasta pra juntar');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
     const pairs = this.params.pairs;
@@ -98,7 +99,6 @@ export default class DragToSnapScene extends Phaser.Scene {
         fontSize: 56,
       });
       const item = this.add.image(itemX, y, tex).setInteractive({ draggable: true, useHandCursor: true });
-      item.setSize(Math.max(160, HIT_AREA_MIN_PX), Math.max(160, HIT_AREA_MIN_PX));
       this.add
         .text(itemX, y + 100, pair.left, {
           fontFamily: 'Nunito, system-ui, sans-serif',

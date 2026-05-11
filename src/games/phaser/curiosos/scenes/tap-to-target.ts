@@ -20,8 +20,8 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   CURIOSOS_PALETTE,
-  HIT_AREA_MIN_PX,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
 } from './shared';
 import type { TtsTrack } from '@/lib/audio/tts-placeholder';
@@ -74,6 +74,7 @@ export default class TapToTargetScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Toca no alvo');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
     const cols = Math.min(this.params.prompts.length, 4);
@@ -96,7 +97,6 @@ export default class TapToTargetScene extends Phaser.Scene {
         fontSize: 64,
       });
       const img = this.add.image(x, y, tex).setInteractive({ useHandCursor: true });
-      img.setSize(Math.max(160, HIT_AREA_MIN_PX), Math.max(160, HIT_AREA_MIN_PX));
       this.add
         .text(x, y + 100, prompt.label, {
           fontFamily: 'Nunito, system-ui, sans-serif',

@@ -98,6 +98,20 @@ export function playTracks(tracks: TtsTrack[] | undefined): void {
   void getTtsPlaceholder().play(tracks);
 }
 
+/**
+ * Anexa listener de SHUTDOWN da cena que para o TTS singleton.
+ * Evita áudio vazar para a próxima cena quando o player avança átomos
+ * ou quando React destrói o Phaser.Game inteiro.
+ */
+export function stopAudioOnShutdown(scene: Phaser.Scene): void {
+  scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+    getTtsPlaceholder().stop();
+  });
+  scene.events.once(Phaser.Scenes.Events.DESTROY, () => {
+    getTtsPlaceholder().stop();
+  });
+}
+
 export function emitAtomComplete(
   scene: Phaser.Scene,
   partial: Partial<AtomResult>,
@@ -133,8 +147,9 @@ export function makeBigButton(
     fontSize: 28,
     rounded: 28,
   });
+  // Hit area é o tamanho da textura (Phaser default). setSize seria
+  // redundante e pode descasar hit area do visual em alguns casos.
   const img = scene.add.image(x, y, tex).setInteractive({ useHandCursor: true });
-  img.setSize(w, h);
   img.on('pointerdown', () => {
     scene.tweens.add({ targets: img, scale: 0.95, duration: 80, yoyo: true });
     void vibrate();

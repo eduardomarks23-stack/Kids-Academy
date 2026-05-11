@@ -22,9 +22,9 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
-  HIT_AREA_MIN_PX,
 } from './shared';
 import type { TtsTrack } from '@/lib/audio/tts-placeholder';
 
@@ -62,6 +62,7 @@ export default class CharacterEditorScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Faz a carinha');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
     this.refreshAvatar(width / 2, height * 0.5);
@@ -91,7 +92,6 @@ export default class CharacterEditorScene extends Phaser.Scene {
       rounded: 130,
     });
     this.avatar = this.add.image(x, y, tex).setInteractive({ useHandCursor: true });
-    this.avatar.setSize(Math.max(260, HIT_AREA_MIN_PX), Math.max(260, HIT_AREA_MIN_PX));
 
     this.label = this.add
       .text(x, y + 170, this.currentEmotion.toUpperCase(), {

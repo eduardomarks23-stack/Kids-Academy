@@ -19,6 +19,7 @@ import {
   emitAtomComplete,
   makeBigButton,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
 } from './shared';
@@ -51,6 +52,7 @@ export default class FreeTapScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Toque livre');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
     // Área tocável: todo o canvas exceto a barra superior

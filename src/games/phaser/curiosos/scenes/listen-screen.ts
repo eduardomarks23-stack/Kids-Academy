@@ -55,6 +55,17 @@ export default class ListenScreenScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(tint);
     this.startTime = performance.now();
 
+    // Marca finished + para TTS quando cena é destruída (substitui
+    // método shutdown() — Phaser não chama métodos custom, escuta evento)
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.finished = true;
+      getTtsPlaceholder().stop();
+    });
+    this.events.once(Phaser.Scenes.Events.DESTROY, () => {
+      this.finished = true;
+      getTtsPlaceholder().stop();
+    });
+
     const { width, height } = this.scale;
 
     // Título
@@ -174,10 +185,5 @@ export default class ListenScreenScene extends Phaser.Scene {
       attempts: 1,
       raw: { tracksPlayed: this.params.audioTracks?.length ?? 0 },
     });
-  }
-
-  shutdown(): void {
-    this.finished = true;
-    getTtsPlaceholder().stop();
   }
 }

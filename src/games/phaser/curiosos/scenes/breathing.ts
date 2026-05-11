@@ -21,6 +21,7 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   CURIOSOS_PALETTE,
 } from './shared';
 import { getTtsPlaceholder, type TtsTrack } from '@/lib/audio/tts-placeholder';
@@ -50,6 +51,7 @@ export default class BreathingScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Respira comigo');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
     const tex = makeLabelTexture(this, 'flower', {

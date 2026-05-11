@@ -17,9 +17,9 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
-  HIT_AREA_MIN_PX,
 } from './shared';
 import { getTtsPlaceholder, type TtsTrack } from '@/lib/audio/tts-placeholder';
 
@@ -62,6 +62,7 @@ export default class CountObjectsScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Conta!');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
     this.startRound();
   }
 
@@ -102,7 +103,6 @@ export default class CountObjectsScene extends Phaser.Scene {
         fontSize: 56,
       });
       const sprite = this.add.image(x, y, tex).setInteractive({ useHandCursor: true });
-      sprite.setSize(Math.max(120, HIT_AREA_MIN_PX), Math.max(120, HIT_AREA_MIN_PX));
       sprite.setData('roundEl', true);
       sprite.setData('counted', false);
 

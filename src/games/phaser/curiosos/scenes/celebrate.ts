@@ -15,6 +15,7 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   CURIOSOS_PALETTE,
   makeBigButton,
 } from './shared';
@@ -84,6 +85,7 @@ export default class CelebrateScene extends Phaser.Scene {
     };
     this.startTime = performance.now();
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
 

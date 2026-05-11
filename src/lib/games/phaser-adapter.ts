@@ -54,7 +54,19 @@ export class PhaserAdapter
     // Dynamic import: Phaser fica fora do bundle inicial
     const phaserModule = await import('phaser');
     const Phaser = phaserModule.default;
-    const SceneClass = await loadScene(config.scene);
+    // Aceita config como vindo do seed (flat: scene + audioTracks + params
+    // no top level) OU como PhaserAtomConfig estrito (scene + params).
+    // O seed gera `{ scene, audioTracks, params, assets, atomType, ... }`.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const raw = config as any;
+    const sceneKey = raw.scene as string;
+    if (!sceneKey) {
+      throw new GameError(
+        'config.scene ausente — átomo phaser sem sceneKey',
+        'SCENE_KEY_MISSING',
+      );
+    }
+    const SceneClass = await loadScene(sceneKey);
 
     // Computa dimensões iniciais do container — fallback para tamanho de
     // tela se container ainda não foi laid-out (Framer Motion timing).
@@ -91,9 +103,20 @@ export class PhaserAdapter
       }
     });
 
-    // Passa params da config para a cena via registry
-    game.registry.set('atomParams', config.params);
-    game.registry.set('atomAssets', config.assets);
+    // Merge: passa params + campos top-level do config (audioTracks,
+    // atomType, displayName, collectible*, etc) num único registry
+    // entry. As cenas leem `this.registry.get('atomParams')` e
+    // encontram tudo num lugar só.
+    const mergedParams = {
+      ...(raw.params ?? {}),
+      audioTracks: raw.audioTracks,
+      atomType: raw.atomType,
+      displayName: raw.displayName,
+      collectibleSlug: raw.collectibleSlug,
+      collectibleDisplayName: raw.collectibleDisplayName,
+    };
+    game.registry.set('atomParams', mergedParams);
+    game.registry.set('atomAssets', raw.assets ?? []);
 
     return new PhaserGameInstance(game);
   }

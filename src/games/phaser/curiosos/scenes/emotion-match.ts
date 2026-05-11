@@ -17,8 +17,8 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
-  HIT_AREA_MIN_PX,
 } from './shared';
 import type { TtsTrack } from '@/lib/audio/tts-placeholder';
 
@@ -48,6 +48,7 @@ export default class EmotionMatchScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? `Toca nas carinhas ${this.params.targetEmotion}s`);
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width } = this.scale;
     const cols = 2;
@@ -72,7 +73,6 @@ export default class EmotionMatchScene extends Phaser.Scene {
         rounded: 80,
       });
       const sprite = this.add.image(x, y, tex).setInteractive({ useHandCursor: true });
-      sprite.setSize(Math.max(160, HIT_AREA_MIN_PX), Math.max(160, HIT_AREA_MIN_PX));
       sprite.setData('counted', false);
 
       sprite.on('pointerdown', () => {

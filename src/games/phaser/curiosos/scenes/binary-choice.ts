@@ -20,6 +20,7 @@ import {
   emitAtomComplete,
   makeBigButton,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
 } from './shared';
@@ -55,6 +56,7 @@ export default class BinaryChoiceScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Escolhe!');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
     this.showRound();
   }
 

@@ -17,9 +17,9 @@ import {
   emitAtomComplete,
   makeLabelTexture,
   playTracks,
+  stopAudioOnShutdown,
   vibrate,
   CURIOSOS_PALETTE,
-  HIT_AREA_MIN_PX,
   SNAP_RADIUS_PX,
 } from './shared';
 import type { TtsTrack } from '@/lib/audio/tts-placeholder';
@@ -50,6 +50,7 @@ export default class SortToBucketScene extends Phaser.Scene {
     this.startTime = performance.now();
     addTitle(this, this.params.title ?? 'Coloca na cesta certa');
     playTracks(this.params.audioTracks);
+    stopAudioOnShutdown(this);
 
     const { width, height } = this.scale;
 
@@ -95,7 +96,6 @@ export default class SortToBucketScene extends Phaser.Scene {
         fontSize: 22,
       });
       const sprite = this.add.image(x, itemY, tex).setInteractive({ draggable: true, useHandCursor: true });
-      sprite.setSize(Math.max(140, HIT_AREA_MIN_PX), Math.max(100, HIT_AREA_MIN_PX));
       const homeX = x;
       const homeY = itemY;
       sprite.setData('startsWith', item.startsWith);
