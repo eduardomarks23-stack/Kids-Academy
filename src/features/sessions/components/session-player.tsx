@@ -8,7 +8,6 @@
 // =============================================================
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useSessionPlayerStore } from '@/stores/session-player';
 import { reportAtomAttempt } from '@/features/sessions/proxy';
 import { getAdapter, type GameInstance, GameError } from '@/lib/games';
@@ -121,7 +120,13 @@ export function SessionPlayer({ childId, onCompleted }: SessionPlayerProps) {
     mountKey,
   ]);
 
-  if (!session) return null;
+  if (!session) {
+    return (
+      <div className="flex h-full min-h-dvh w-full items-center justify-center bg-white">
+        <p className="text-gray-500">Carregando sessão…</p>
+      </div>
+    );
+  }
 
   if (status === 'completed') {
     return (
@@ -150,19 +155,17 @@ export function SessionPlayer({ childId, onCompleted }: SessionPlayerProps) {
     );
   }
 
+  // Container Phaser sem AnimatePresence: motion wrappers tendem a
+  // ter dimensões 0 no primeiro frame (Framer aplica transform inline),
+  // o que faz Phaser.Scale.RESIZE inicializar o canvas em 0x0.
   return (
-    <div className="relative h-full w-full bg-white">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentAtom?.id ?? 'empty'}
-          ref={containerRef}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="h-full w-full"
-        />
-      </AnimatePresence>
+    <div className="relative h-full min-h-dvh w-full bg-white">
+      <div
+        key={currentAtom?.id ?? 'empty'}
+        ref={containerRef}
+        className="h-full w-full"
+        style={{ minHeight: '100dvh', minWidth: '100%' }}
+      />
     </div>
   );
 }

@@ -56,19 +56,39 @@ export class PhaserAdapter
     const Phaser = phaserModule.default;
     const SceneClass = await loadScene(config.scene);
 
+    // Computa dimensões iniciais do container — fallback para tamanho de
+    // tela se container ainda não foi laid-out (Framer Motion timing).
+    const initialWidth =
+      container.offsetWidth ||
+      (typeof window !== 'undefined' ? window.innerWidth : 800);
+    const initialHeight =
+      container.offsetHeight ||
+      (typeof window !== 'undefined' ? window.innerHeight : 600);
+
     const game = new Phaser.Game({
       type: Phaser.AUTO,
       parent: container,
+      width: initialWidth,
+      height: initialHeight,
       backgroundColor: '#FFFFFF',
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: initialWidth,
+        height: initialHeight,
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       scene: SceneClass as any,
       input: { activePointers: 2 },
-      // Hit detection mais precisa em pointers de criança
       banner: false,
+    });
+
+    // Após mount, força refresh para pegar dimensões reais do container
+    // caso tenham mudado entre criação e ready.
+    queueMicrotask(() => {
+      if (container.offsetWidth > 0 && container.offsetHeight > 0) {
+        game.scale.resize(container.offsetWidth, container.offsetHeight);
+      }
     });
 
     // Passa params da config para a cena via registry
