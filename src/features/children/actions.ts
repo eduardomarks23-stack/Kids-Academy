@@ -26,6 +26,10 @@ const createChildSchema = z.object({
     .or(z.literal('true'))
     .or(z.boolean())
     .optional(),
+  // Calibração inicial (3 perguntas) — para Curiosos 3-4 anos
+  calibrationNumbers: z.string().optional(),
+  calibrationColors: z.string().optional(),
+  calibrationLetters: z.string().optional(),
 });
 
 export async function createChildAction(
@@ -78,7 +82,14 @@ export async function createChildAction(
     familyId = created.id as string;
   }
 
-  // Cria criança
+  // Cria criança (com calibração se fornecida)
+  const calibration = {
+    numbers: input.calibrationNumbers ?? null,
+    colors: input.calibrationColors ?? null,
+    letters: input.calibrationLetters ?? null,
+    answered_at: new Date().toISOString(),
+  };
+
   const { data: created, error: childErr } = await supabase
     .from('children')
     .insert({
@@ -86,7 +97,9 @@ export async function createChildAction(
       display_name: input.displayName,
       birth_year: input.birthYear,
       hand_preference: input.handPreference ?? null,
-    })
+      calibration_jsonb: calibration as never,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any)
     .select('id')
     .single();
   if (childErr || !created) {

@@ -7,12 +7,18 @@
 // =============================================================
 
 export type AtomType =
+  // Mundo dos Exploradores (5-6 anos) e Inventores (7-8 anos)
   | 'presentation'
   | 'recognition'
   | 'discrimination'
   | 'guided_production'
   | 'free_production'
-  | 'application';
+  | 'application'
+  // Mundo dos Curiosos (3-4 anos) — 4 tiers simplificados
+  | 'listen'
+  | 'imitate'
+  | 'play'
+  | 'celebrate';
 
 export type GameEngine = 'phaser' | 'video' | 'audio' | 'native_html';
 
