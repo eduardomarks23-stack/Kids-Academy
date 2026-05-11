@@ -4,6 +4,20 @@ Registro de decisões tomadas pelo Claude Code em modo agêntico durante a imple
 
 ---
 
+## 2026-05-12 — Unificação de schema: drop completo do legado pt-BR
+
+**Decisão**: dropar as 17 tabelas pt-BR (`responsaveis`, `perfis_crianca`, `sessoes`, `aulas`, `jogos`, `quiz`, `trilhas`, `niveis`, `questoes`, `progresso_aluno`, `eventos_comportamento`, `conquistas`, `conquistas_aluno`, `mentor_insights`, `assinaturas`, `assinaturas_eventos`, `feedback`, `consentimentos_lgpd`) + 16 enums + funções (`handle_new_user` pt-BR, `deletar_dados_crianca`, `pertence_ao_responsavel`, `update_updated_at`). Schema único agora é o canônico em inglês (spec v1).
+
+**Justificativa**: sem usuários ainda no produto. Coexistência de schemas pt-BR e inglês era débito técnico do scaffolding pré-SPEC v1. O SPEC seção 3 define inglês como convenção canônica. Unificar agora simplifica modelo mental, evita ambiguidade pro MENTOR (Fase 5) e mantém único caminho de migração.
+
+**Consequência**: deletadas 40+ arquivos legados — rotas `src/app/(app)/` (arena, aula, home, jogo, mentor, perfil, quiz, trilha), `src/app/pais/`, `src/app/onboarding/`, `src/app/(auth)/consentimento-lgpd/`, `src/games/core/` (BehaviorTracker, GameRegistry, GameRunner, PhaserHost), jogos `EncaixeFormas`, `AventuraMatematica`, `ResgatePrimeiraLetra`, `PegaFracoes`, `src/lib/perfil-ativo.ts`, components `app-shell` e `bottom-nav`, e `GameRegistryProvider`. Redirects `/pais/dashboard` → `/dashboard`.
+
+**Migration**: `20260512000000_drop_legacy_ptbr.sql` com `DROP TABLE ... CASCADE` + DROP ENUM + DROP FUNCTION + validação automática de remoção.
+
+**Reversível**: sim via `git revert` enquanto o database não está em produção. Após produção, exigirá migration manual.
+
+---
+
 ## 2026-05-11 — Reuso de schema spec v1 (não recriar)
 
 **Decisão**: o repo já está em Cenário C (bootstrap completo). Schema spec v1 (`20260511120000_spec_v1_schema.sql`) com 15 tabelas em inglês já existe e cobre integralmente o modelo dos PROMPT. Não vou recriar — vou seedar o Mundo dos Curiosos sobre o schema existente.

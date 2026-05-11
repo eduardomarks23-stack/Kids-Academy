@@ -67,3 +67,6 @@ desktop.ini
 # Supabase local (opcional)
 /supabase/.branches
 /supabase/.temp
+
+# Fonte de docs ingerida (já copiada para docs/)
+/public/Mundo 1/

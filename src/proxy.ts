@@ -20,28 +20,15 @@ const PUBLIC_ROUTES = [
   '/sobre',
 ];
 
-const PAIS_ONLY_ROUTES = [
-  '/pais',
+const PARENT_ONLY_ROUTES = [
   '/consentimento-lgpd',
-  '/onboarding',
-  // (parent) — spec v1 routes
   '/dashboard',
   '/children',
   '/billing',
   '/settings',
 ];
 
-const APP_ONLY_ROUTES = [
-  // legacy (app) routes
-  '/home',
-  '/arena',
-  '/perfil',
-  '/trilha',
-  '/aula',
-  '/jogo',
-  '/quiz',
-  '/mentor',
-  // (child) — spec v1 routes
+const CHILD_ONLY_ROUTES = [
   '/inicio',
   '/axis',
   '/chapter',
@@ -83,8 +70,8 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const isProtectedRoute =
-    PAIS_ONLY_ROUTES.some((r) => pathname.startsWith(r)) ||
-    APP_ONLY_ROUTES.some((r) => pathname.startsWith(r));
+    PARENT_ONLY_ROUTES.some((r) => pathname.startsWith(r)) ||
+    CHILD_ONLY_ROUTES.some((r) => pathname.startsWith(r));
 
   if (!user && isProtectedRoute) {
     const url = request.nextUrl.clone();

@@ -7,12 +7,12 @@ import { createServerSupabaseClient } from '@/lib/supabase/server';
  *   - recuperação de senha (resetPasswordForEmail redirectTo)
  *   - OAuth provider (Google/futuros)
  *
- * Troca o code por sessão e redireciona para `next` (ou /pais/dashboard).
+ * Troca o code por sessão e redireciona para `next` (ou /dashboard).
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/pais/dashboard';
+  const next = searchParams.get('next') ?? '/dashboard';
 
   if (code) {
     const supabase = await createServerSupabaseClient();
